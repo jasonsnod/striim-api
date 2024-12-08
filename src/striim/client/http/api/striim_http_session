@@ -1,0 +1,50 @@
+import requests
+
+class StriimSession:
+
+    AUTH_PATH = '/security/authenticate'
+    
+    def __init__(self, http_address, is_authorizing=False, username=None, password=None):
+        self.__base_url = http_address
+
+        self.create_session()
+
+        if not is_authorizing:
+            print('Setting the Striim auth token to None. Use the authorize_session function to retrieve the auth token from Striim.')
+        else:
+            striim_auth_token = self.authorize_session(username, password)
+
+
+    def create_session(self):
+        self.__session = requests.Session()
+
+    def authorize_session(self, username, password):
+
+        striim_auth_payload = {
+            'username': username,
+            'password': password
+        }
+
+        try:
+            auth_token_response = self.__session.post(url=self.__base_url + self.AUTH_PATH, data=striim_auth_payload)
+            
+            if auth_token_response.status_code != 200:
+                auth_token_response.raise_for_status
+            
+            else:
+                return auth_token_response.json()['token']
+
+        except Exception as error:
+            raise    
+
+    def set_api_header(self, striim_auth_token):
+        
+        self.__api_header = {
+            'authorization': f'STRIIM-TOKEN {striim_auth_token}',
+            'content-type': 'text/plain'
+        }
+
+    def set_content_type(self, accepts_json=False):
+        
+        if accepts_json:
+            self.__api_header['content-type'] = 'json/application'
