@@ -1,18 +1,30 @@
 import requests
-from striim.client.http.api.striim
+from api.striim_http_session import StriimSession
+from striim.client.helpers.striim_api_error_helper import StriimException
+import typing
 
 class TungstenConsole:
 
     TUNGSTEN_PATH = "/api/v2/tungsten"
 
-    def __init__(self, striim_api_seesion):
+    def __init__(self, striim_api_seesion: StriimSession):
         self.__striim_api_session = striim_api_seesion
-        self.__tungsten_console_url = self.__striim_api_session.get_base_url
+        self.__tungsten_console_url = self.__striim_api_session.get_base_url() + self.TUNGSTEN_PATH
 
     
-    def use_tql_file(self, tql_file_path=None):
-        if tql_file_path:
-            self.__striim_api_session.post()
+    def use_tql_file(self, tql_file_path=None, passphrase=None):
+
+        if not tql_file_path:
+            raise StriimException('File for use within the Striim console was not specified. Please specify the path of the file as it exists internally within Striim.')
+        
+        command = f'@{tql_file_path} [passphrase={passphrase}];' if passphrase else f'@{tql_file_path};'
+        try:
+            striim_console_response = self.__striim_api_session.post(self.__tungsten_console_url, data=command)
+            return striim_console_response.json()
+
+        except Exception as error:
+            raise
+
     
     def deploy_app():
         return
