@@ -1,16 +1,18 @@
 import requests
+from striim.client.http.api.striim
 
 class TungstenConsole:
 
     TUNGSTEN_PATH = "/api/v2/tungsten"
 
-    def __init__(self, striim_api_seesion, striim_api_header):
-        self.__striim_api_header = striim_api_header
+    def __init__(self, striim_api_seesion):
         self.__striim_api_session = striim_api_seesion
+        self.__tungsten_console_url = self.__striim_api_session.get_base_url
 
     
-    def use_tql_file():
-        return
+    def use_tql_file(self, tql_file_path=None):
+        if tql_file_path:
+            self.__striim_api_session.post()
     
     def deploy_app():
         return
