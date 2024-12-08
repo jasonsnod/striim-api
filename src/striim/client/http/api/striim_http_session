@@ -13,6 +13,10 @@ class StriimSession:
             print('Setting the Striim auth token to None. Use the authorize_session function to retrieve the auth token from Striim.')
         else:
             striim_auth_token = self.authorize_session(username, password)
+        
+        self.set_api_header(striim_auth_token)
+        
+
 
 
     def create_session(self):
@@ -37,10 +41,12 @@ class StriimSession:
         except Exception as error:
             raise    
 
-    def set_api_header(self, striim_auth_token):
+    def set_api_header(self, striim_auth_token=None):
         
         self.__api_header = {
             'authorization': f'STRIIM-TOKEN {striim_auth_token}',
+            'content-type': 'text/plain'
+        } if striim_auth_token else {
             'content-type': 'text/plain'
         }
 
