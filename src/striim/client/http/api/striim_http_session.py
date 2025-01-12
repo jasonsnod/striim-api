@@ -1,19 +1,21 @@
 import requests
 from striim.client.helpers.striim_api_error_helper import StriimException
+from authorization_api import StriimAuthorization
 
 class StriimSession:
-
-    AUTH_PATH = '/security/authenticate'
     
-    def __init__(self, striim_http_address, is_authorizing=False, username=None, password=None):
+    def __init__(self, striim_http_address, is_authorizing=False, striim_authorization=None):
         self.__base_url = striim_http_address
 
         self.create_session()
 
+        
         if not is_authorizing:
             print('Setting the Striim auth token to None. Use the authorize_session function to retrieve the auth token from Striim.')
+            striim_auth_token = ''
         else:
-            striim_auth_token = self.authorize_session(username, password)
+            self.__striim_authorization = striim_authorization
+            striim_auth_token = self.__striim_authorization.get_authorization_token()
         
         self.set_api_header(striim_auth_token)
         
@@ -54,6 +56,8 @@ class StriimSession:
         
         if accepts_json:
             self.__api_header['content-type'] = 'json/application'
+        else:
+            self.__api_header['content-type'] = 'text/plain'
 
     def get_base_url(self):
         return self.__base_url
