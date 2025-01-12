@@ -1,6 +1,6 @@
 from enum import enum
 
-class AppStates(Enum):
+class AppStates(enum):
     
     APPROVING_QUIESCE = 'approving quiesce'
     COMPLETED = 'completed'
