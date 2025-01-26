@@ -1,0 +1,40 @@
+{
+    "commands": [
+        {
+            "command": "create or replace",
+            "component_type": "application",
+            "component_namespace": "this_namespace",
+            "component_name": "this_application",
+            "arguments": [
+                
+            ]
+        },
+        {
+            "command": "create or replace",
+            "component_type": "source",
+            "component_namespace": "this_namespace",
+            "component_name": "this_source",
+            "adapter_type": "Global.DatabaseReader",
+            "parameters": {
+                "adapterName": "PostgreSQLReader",
+                "CDDLCapture": false,
+                "ConnectionURL": "jdbc:postgresql://<enter-hostname-orURL>/gcppg",
+                "Password": "<enter-password>",
+                "Username": "replication_user",
+                "Password_encrypted": "true",
+                "Tables": "'qatest'.'retaildata\\_cdc'",
+                "PostgresConfig": "{\n\"ReplicationPluginConfig\": {\n\t\t\"Name\": \"WAL2JSON\",\n\t\t\"Format\": \"1\"\n\t}\n}",
+                "CDDLAction": "Process",
+                "connectionRetryPolicy": "retryInterval=30, maxRetries=3",
+                "ReplicationSlotName": "test_slot",
+                "FilterTransactionBoundaries": true 
+            }
+        },
+        {
+            "command": "end",
+            "component_type": "application",
+            "component_namespace": "this_namespace",
+            "component_name": "this_application"
+        }
+    ]
+}
